@@ -1,7 +1,7 @@
 # LabStation Dashboard
 
 **Panel de control elegante para acceder a todos los servicios auto-hosteados desde un solo lugar.**  
-Desarrollado con React + TailwindCSS, diseñado para ser minimalista, responsivo y escalable.
+Desarrollado con React + Bootstrap, diseñado para ser minimalista, responsivo y escalable.
 
 ---
 
@@ -88,7 +88,7 @@ Pronto se incluirán instrucciones detalladas en la carpeta `deploy/`.
 
 ## 🧠 Autor
 
-Desarrollado por [@tuusuario](https://github.com/MaximilianoTobio) como parte de un laboratorio personal de infraestructura auto-gestionada.
+Desarrollado por [@Max](https://github.com/MaximilianoTobio) como parte de un laboratorio personal de infraestructura auto-gestionada.
 
 ---
 
