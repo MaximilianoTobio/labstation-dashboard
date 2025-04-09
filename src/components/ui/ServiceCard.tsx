@@ -1,14 +1,16 @@
 import { Card, Button } from "react-bootstrap";
 import { Service } from "../../types";
 import { getServiceIcon } from "../../utils/iconUtils";
+import { useTheme } from "../../context/ThemeContext";
 
 interface ServiceCardProps {
   service: Service;
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
+  const { theme } = useTheme();
+
   const handleServiceClick = () => {
-    // Abrir el servicio en una nueva pestaña
     window.open(service.url, "_blank", "noopener,noreferrer");
   };
 
@@ -21,11 +23,15 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ service }) => {
           </div>
           <Card.Title className="mb-0 fs-5">{service.name}</Card.Title>
         </div>
-        <Card.Text className="text-muted small flex-grow-1">
+        <Card.Text
+          className={`small flex-grow-1 ${
+            theme === "dark" ? "text-light" : "text-muted"
+          }`}
+        >
           {service.description}
         </Card.Text>
         <Button
-          variant="primary"
+          variant={theme === "dark" ? "outline-light" : "primary"}
           onClick={handleServiceClick}
           disabled={!service.isActive}
           className="mt-2"

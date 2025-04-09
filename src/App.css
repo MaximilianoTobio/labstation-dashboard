@@ -1,42 +1,127 @@
+/* Base styles */
 #root {
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+  padding: 1rem;
 }
 
+/* Estilos globales con soporte para tema */
+body {
+  transition: background-color 0.3s ease, color 0.3s ease;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+body[data-bs-theme="light"] {
+  background-color: #f8f9fa;
+  color: #212529;
+}
+
+body[data-bs-theme="dark"] {
+  background-color: #212529;
+  color: #f8f9fa;
+}
+
+/* Estilos para las tarjetas en modo oscuro */
+[data-bs-theme="dark"] .card {
+  background-color: #343a40;
+  border-color: #495057;
+}
+
+[data-bs-theme="dark"] .card-text {
+  color: #ced4da !important;
+}
+
+[data-bs-theme="dark"] .text-muted {
+  color: #adb5bd !important;
+}
+
+/* Animación de hover para las tarjetas */
+.card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease,
+    background-color 0.3s ease;
+  padding: 1.5em;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+[data-bs-theme="light"] .card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+[data-bs-theme="dark"] .card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.25) !important;
+}
+
+/* Iconos de servicios */
+.service-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+/* Estilos del logo heredados */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Transiciones para el modo oscuro */
+.navbar,
+.footer,
+.card,
+.btn {
+  transition: background-color 0.3s ease, color 0.3s ease,
+    border-color 0.3s ease;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+/* Estilos del modo oscuro para el footer */
+[data-bs-theme="dark"] footer {
+  background-color: #343a40 !important;
+  border-top-color: #495057 !important;
+}
+
+/* Estilos del modo oscuro para el navbar */
+[data-bs-theme="dark"] .navbar {
+  background-color: #343a40 !important;
+  border-bottom-color: #495057 !important;
+}
+
+/* Ajustes para enlaces en modo oscuro */
+[data-bs-theme="dark"] a:not(.btn) {
+  color: #8bb9fe;
+}
+
+[data-bs-theme="dark"] a:hover:not(.btn) {
+  color: #a8c7fe;
+}
+
+/* Mantener la legibilidad del texto en las tarjetas */
+.card-title {
+  font-weight: 600;
+}
+
+/* Ajustar el espaciado en móviles */
+@media (max-width: 768px) {
+  #root {
+    padding: 0.5rem;
   }
-}
 
-.card {
-  padding: 2em;
-}
-
-.read-the-docs {
-  color: #888;
+  .card {
+    padding: 1em;
+  }
 }
