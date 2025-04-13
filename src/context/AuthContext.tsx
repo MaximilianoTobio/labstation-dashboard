@@ -47,8 +47,8 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     // Por ahora, simulamos una verificación básica
 
     // Credenciales de prueba
-    const validUsername = "admin";
-    const validPassword = "admin123";
+    const validUsername = "Maxx";
+    const validPassword = "123456";
 
     if (username === validUsername && password === validPassword) {
       const userData: User = { username };
