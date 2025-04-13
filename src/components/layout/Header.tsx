@@ -1,8 +1,16 @@
-import { Container, Navbar, Nav } from "react-bootstrap";
-import logo from "../../assets/images/logo.png";
+// src/components/layout/Header.tsx
+import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { useAuth } from "../../context/AuthContext";
 import ThemeToggle from "../ui/ThemeToggle";
+import logo from "../../assets/images/logo.png";
 
 const Header: React.FC = () => {
+  const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <Navbar expand="lg" className="shadow-sm">
       <Container>
@@ -27,6 +35,18 @@ const Header: React.FC = () => {
             {/* Puedes agregar más enlaces de navegación aquí en el futuro */}
           </Nav>
           <ThemeToggle />
+
+          {user && (
+            <NavDropdown
+              title={`Hola, ${user.username}`}
+              id="user-dropdown"
+              className="ms-3"
+            >
+              <NavDropdown.Item onClick={handleLogout}>
+                Cerrar sesión
+              </NavDropdown.Item>
+            </NavDropdown>
+          )}
         </Navbar.Collapse>
       </Container>
     </Navbar>

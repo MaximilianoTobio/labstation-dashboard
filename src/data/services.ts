@@ -73,15 +73,17 @@ export const services: Service[] = [
     category: "bot",
     isActive: true,
   },
+  /*
   {
-    id: "typebot-viewer",
-    name: "Typebot (Viewer)",
-    description: "Visualización de bots conversacionales",
-    url: "https://apviewerap.labstation.dev",
-    icon: "bot",
-    category: "bot",
-    isActive: true,
+    id: 'typebot-viewer',
+    name: 'Typebot (Viewer)',
+    description: 'Visualización de bots conversacionales',
+    url: 'https://apviewerap.labstation.dev',
+    icon: 'bot',
+    category: 'bot',
+    isActive: true
   },
+  */
   {
     id: "evolution-api",
     name: "Evolution API",
@@ -91,6 +93,7 @@ export const services: Service[] = [
     category: "automation",
     isActive: true,
   },
+  /*
   {
     id: "postgres",
     name: "PostgreSQL",
@@ -100,4 +103,5 @@ export const services: Service[] = [
     category: "database",
     isActive: true,
   },
+  */
 ];
