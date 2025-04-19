@@ -1,16 +1,23 @@
 // src/pages/LoginPage.tsx
 import { useState } from "react";
-import { Container, Row, Col, Form, Button, Alert } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Alert,
+  Spinner,
+} from "react-bootstrap";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate, useLocation } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { login } = useAuth();
+  const { login, error } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -19,21 +26,23 @@ const LoginPage: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-    setIsLoading(true);
+
+    if (!username || !password) {
+      return;
+    }
+
+    setIsSubmitting(true);
 
     try {
       const success = await login(username, password);
       if (success) {
         navigate(from, { replace: true });
-      } else {
-        setError("Usuario o contraseña incorrectos");
       }
     } catch (err) {
-      setError("Error al iniciar sesión. Por favor, intenta de nuevo.");
-      console.error(err);
+      // El error se maneja en el contexto de autenticación
+      console.error("Error de inicio de sesión:", err);
     } finally {
-      setIsLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -57,6 +66,7 @@ const LoginPage: React.FC = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 required
+                disabled={isSubmitting}
               />
             </Form.Group>
 
@@ -68,12 +78,27 @@ const LoginPage: React.FC = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
+                disabled={isSubmitting}
               />
             </Form.Group>
 
             <div className="d-grid gap-2">
-              <Button variant="primary" type="submit" disabled={isLoading}>
-                {isLoading ? "Iniciando sesión..." : "Iniciar sesión"}
+              <Button variant="primary" type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <>
+                    <Spinner
+                      as="span"
+                      animation="border"
+                      size="sm"
+                      role="status"
+                      aria-hidden="true"
+                      className="me-2"
+                    />
+                    Iniciando sesión...
+                  </>
+                ) : (
+                  "Iniciar sesión"
+                )}
               </Button>
             </div>
           </Form>

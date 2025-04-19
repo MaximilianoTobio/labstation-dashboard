@@ -1,5 +1,5 @@
 // src/components/auth/ProtectedRoute.tsx
-import { Navigate, useLocation } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
 import { ReactNode } from "react";
 
@@ -8,14 +8,21 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { isAuthenticated } = useAuth();
-  const location = useLocation();
+  const { isAuthenticated, isLoading } = useAuth();
 
-  if (!isAuthenticated) {
-    // Redirigir al login conservando la ruta original a la que se intentaba acceder
-    return <Navigate to="/login" state={{ from: location }} replace />;
+  // Mostrar un indicador de carga mientras verificamos la autenticación
+  if (isLoading) {
+    return (
+      <div className="d-flex justify-content-center py-5">Cargando...</div>
+    );
   }
 
+  // Si no está autenticado, redirigir al login
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  // Si está autenticado, mostrar los componentes hijos
   return <>{children}</>;
 };
 

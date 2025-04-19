@@ -1,11 +1,10 @@
 // src/components/layout/Header.tsx
-import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Container, Navbar, Nav, NavDropdown, Spinner } from "react-bootstrap";
 import { useAuth } from "../../context/AuthContext";
 import ThemeToggle from "../ui/ThemeToggle";
-import logo from "../../assets/images/logo.png";
 
 const Header: React.FC = () => {
-  const { user, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
 
   const handleLogout = () => {
     logout();
@@ -15,13 +14,8 @@ const Header: React.FC = () => {
     <Navbar expand="lg" className="shadow-sm">
       <Container>
         <Navbar.Brand href="/" className="d-flex align-items-center">
-          <img
-            src={logo}
-            width="120"
-            height="80"
-            className="d-inline-block align-top me-2"
-            alt="LabStation Logo"
-          />
+          {/* Puedes reemplazar esto con tu logo real */}
+          <div className="bg-primary text-white p-2 rounded me-2">LS</div>
           <span className="fw-bold fs-4 text-primary ms-2 d-none d-sm-inline">
             LABSTATION DASHBOARD
           </span>
@@ -36,7 +30,9 @@ const Header: React.FC = () => {
           </Nav>
           <ThemeToggle />
 
-          {user && (
+          {isLoading ? (
+            <Spinner animation="border" size="sm" className="ms-3" />
+          ) : isAuthenticated && user ? (
             <NavDropdown
               title={`Hola, ${user.username}`}
               id="user-dropdown"
@@ -46,6 +42,10 @@ const Header: React.FC = () => {
                 Cerrar sesión
               </NavDropdown.Item>
             </NavDropdown>
+          ) : (
+            <Nav.Link href="/login" className="ms-3">
+              Iniciar sesión
+            </Nav.Link>
           )}
         </Navbar.Collapse>
       </Container>

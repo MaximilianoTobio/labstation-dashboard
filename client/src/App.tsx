@@ -11,30 +11,32 @@ import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
 import { ThemeProvider } from "./context/ThemeContext";
 import { AuthProvider } from "./context/AuthContext";
-import "bootstrap/dist/css/bootstrap.min.css";
+import { ServiceProvider } from "./context/ServiceContext";
 import "./App.css";
 
 function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        <Router>
-          <Routes>
-            <Route path="/login" element={<LoginPage />} />
-            <Route
-              path="/"
-              element={
-                <ProtectedRoute>
-                  <MainLayout>
-                    <HomePage />
-                  </MainLayout>
-                </ProtectedRoute>
-              }
-            />
-            {/* Redirigir cualquier otra ruta a la página principal */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </Router>
+        <ServiceProvider>
+          <Router>
+            <Routes>
+              <Route path="/login" element={<LoginPage />} />
+              <Route
+                path="/"
+                element={
+                  <ProtectedRoute>
+                    <MainLayout>
+                      <HomePage />
+                    </MainLayout>
+                  </ProtectedRoute>
+                }
+              />
+              {/* Redirigir cualquier otra ruta a la página principal */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </Router>
+        </ServiceProvider>
       </ThemeProvider>
     </AuthProvider>
   );
