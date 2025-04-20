@@ -1,18 +1,12 @@
+// server/middleware/auth.js
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
 
 // Middleware para verificar el token JWT
 const verifyToken = async (req, res, next) => {
   try {
-    const authHeader = req.headers.authorization;
-
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return res
-        .status(401)
-        .json({ message: "No se proporcionó token de autenticación" });
-    }
-
-    const token = authHeader.split(" ")[1];
+    // Obtener el token desde las cookies
+    const token = req.cookies.jwt;
 
     if (!token) {
       return res

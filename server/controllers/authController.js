@@ -1,20 +1,32 @@
+// server/controllers/authController.js
 const jwt = require("jsonwebtoken");
 const { User } = require("../models");
-const { Op } = require("sequelize"); // Añade esta línea
+const { Op } = require("sequelize");
+
+// Función para configurar cookies JWT
+const setTokenCookie = (res, token) => {
+  // Opciones para la cookie
+  const cookieOptions = {
+    httpOnly: true, // No accesible mediante JavaScript
+    secure: process.env.NODE_ENV === "production", // Solo HTTPS en producción
+    sameSite: "lax", // Cambia de 'strict' a 'lax' para permitir redirecciones
+    maxAge: parseInt(process.env.COOKIE_MAX_AGE) || 24 * 60 * 60 * 1000, // 24 horas por defecto
+    path: "/", // Asegúrate de que la cookie esté disponible en todas las rutas
+  };
+
+  // Establecer la cookie
+  res.cookie("jwt", token, cookieOptions);
+};
 
 // Registrar un nuevo usuario
 const register = async (req, res) => {
   try {
     const { username, email, password, firstName, lastName } = req.body;
 
-    // Verificar si el usuario ya existe (corrige esta parte)
+    // Verificar si el usuario ya existe
     const existingUser = await User.findOne({
       where: {
-        [Op.or]: [
-          // Usa Op directamente, no User.sequelize.Op
-          { username },
-          { email },
-        ],
+        [Op.or]: [{ username }, { email }],
       },
     });
 
@@ -38,7 +50,10 @@ const register = async (req, res) => {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
-    // Responder con datos del usuario (sin contraseña) y token
+    // Establecer cookie con el token
+    setTokenCookie(res, token);
+
+    // Responder con datos del usuario (sin contraseña)
     res.status(201).json({
       message: "Usuario registrado correctamente",
       user: {
@@ -49,7 +64,6 @@ const register = async (req, res) => {
         lastName: user.lastName,
         role: user.role,
       },
-      token,
     });
   } catch (error) {
     console.error("Error al registrar usuario:", error);
@@ -86,7 +100,10 @@ const login = async (req, res) => {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
-    // Responder con datos del usuario (sin contraseña) y token
+    // Establecer cookie con el token
+    setTokenCookie(res, token);
+
+    // Responder con datos del usuario (sin contraseña)
     res.status(200).json({
       message: "Inicio de sesión exitoso",
       user: {
@@ -97,12 +114,17 @@ const login = async (req, res) => {
         lastName: user.lastName,
         role: user.role,
       },
-      token,
     });
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
     res.status(500).json({ message: "Error al iniciar sesión" });
   }
+};
+
+// Cerrar sesión
+const logout = (req, res) => {
+  res.clearCookie("jwt");
+  res.status(200).json({ message: "Sesión cerrada correctamente" });
 };
 
 // Obtener perfil de usuario autenticado
@@ -126,5 +148,6 @@ const getProfile = async (req, res) => {
 module.exports = {
   register,
   login,
+  logout,
   getProfile,
 };

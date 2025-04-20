@@ -1,6 +1,7 @@
 const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
+const cookieParser = require("cookie-parser"); // Importación correcta
 const { sequelize, testConnection } = require("./config/db");
 const models = require("./models");
 const routes = require("./routes");
@@ -12,8 +13,18 @@ dotenv.config();
 // Inicializar app
 const app = express();
 
+// Configuración de CORS con soporte para cookies
+app.use(
+  cors({
+    origin: "http://localhost:5173", // URL exacta del frontend
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
+
 // Middlewares
-app.use(cors());
+app.use(cookieParser()); // Añadir esta línea
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

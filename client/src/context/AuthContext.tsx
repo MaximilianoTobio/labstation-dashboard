@@ -1,3 +1,4 @@
+// client/src/context/AuthContext.tsx
 import {
   createContext,
   useContext,
@@ -29,7 +30,7 @@ interface AuthContextType {
     firstName?: string;
     lastName?: string;
   }) => Promise<boolean>;
-  logout: () => void;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -44,24 +45,23 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
-  // Al iniciar, verificamos si hay un token en localStorage
+  // Al iniciar, verificamos si hay una sesión activa intentando obtener el perfil
   useEffect(() => {
     const loadUser = async () => {
-      const token = localStorage.getItem("token");
-      if (token) {
-        try {
-          // Intentar obtener el perfil del usuario con el token almacenado
+      try {
+        // Solo intentar obtener el perfil del usuario si no estamos en la página de login
+        if (!window.location.pathname.includes("/login")) {
           const response = await authService.getProfile();
           setUser(response.user);
           setIsAuthenticated(true);
-        } catch (err) {
-          // Si hay un error, limpiar el token (podría estar expirado)
-          localStorage.removeItem("token");
-          setUser(null);
-          setIsAuthenticated(false);
         }
+      } catch (err) {
+        // Si hay un error, el usuario no está autenticado
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     };
 
     loadUser();
@@ -75,7 +75,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setError(null);
       const response = await authService.login({ username, password });
-      localStorage.setItem("token", response.token);
       setUser(response.user);
       setIsAuthenticated(true);
       return true;
@@ -99,7 +98,6 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     try {
       setError(null);
       const response = await authService.register(userData);
-      localStorage.setItem("token", response.token);
       setUser(response.user);
       setIsAuthenticated(true);
       return true;
@@ -113,10 +111,16 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   };
 
   // Función para cerrar sesión
-  const logout = () => {
-    authService.logout();
-    setUser(null);
-    setIsAuthenticated(false);
+  const logout = async () => {
+    try {
+      await authService.logout();
+    } catch (err) {
+      console.error("Error al cerrar sesión:", err);
+    } finally {
+      // Siempre hacemos esto aunque falle la petición
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   return (

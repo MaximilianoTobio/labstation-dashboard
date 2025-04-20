@@ -1,8 +1,8 @@
 import axios, {
   AxiosInstance,
-  InternalAxiosRequestConfig,
-  AxiosResponse,
-  AxiosError,
+  //InternalAxiosRequestConfig,
+  //AxiosResponse,
+  //AxiosError,
 } from "axios";
 
 // URL base de la API (ajusta según tu entorno)
@@ -14,28 +14,31 @@ const api: AxiosInstance = axios.create({
   headers: {
     "Content-Type": "application/json",
   },
+  withCredentials: true, // Esto es crítico para que Axios envíe cookies
 });
 
 // Interceptor para añadir el token de autenticación a las solicitudes
-api.interceptors.request.use(
-  (config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
-    const token = localStorage.getItem("token");
-    if (token && config.headers) {
-      config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-  },
-  (error: AxiosError) => Promise.reject(error)
-);
+//api.interceptors.request.use(
+//(config: InternalAxiosRequestConfig): InternalAxiosRequestConfig => {
+// const token = localStorage.getItem("token");
+// if (token && config.headers) {
+//   config.headers.Authorization = `Bearer ${token}`;
+// }
+// return config;
+// },
+//  (error: AxiosError) => Promise.reject(error)
+//);
 
 // Interceptor para manejar respuestas y errores comunes
 api.interceptors.response.use(
-  (response: AxiosResponse) => response,
-  (error: AxiosError) => {
-    // Si el error es 401 (no autorizado), el token podría haber expirado
-    if (error.response && error.response.status === 401) {
-      localStorage.removeItem("token");
-      // Aquí podríamos redirigir al login o disparar un evento
+  (response) => response,
+  (error) => {
+    // Solo redirigir al login si no estamos ya en la página de login
+    if (
+      error.response &&
+      error.response.status === 401 &&
+      !window.location.pathname.includes("/login")
+    ) {
       window.location.href = "/login";
     }
     return Promise.reject(error);

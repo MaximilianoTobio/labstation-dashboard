@@ -1,3 +1,4 @@
+// client/src/services/authService.ts
 import api from "./api";
 
 // Tipos para las peticiones y respuestas
@@ -15,7 +16,6 @@ interface AuthResponse {
     lastName?: string;
     role: string;
   };
-  token: string;
   message: string;
 }
 
@@ -46,9 +46,9 @@ const authService = {
     return response.data;
   },
 
-  // Cerrar sesión (sólo elimina el token en el cliente)
-  logout: () => {
-    localStorage.removeItem("token");
+  // Cerrar sesión
+  logout: async () => {
+    await api.post("/auth/logout");
   },
 };
 
