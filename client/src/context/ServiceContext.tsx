@@ -1,8 +1,10 @@
+// src/context/ServiceContext.tsx (revisión)
 import {
   createContext,
   useContext,
   useState,
   useEffect,
+  useCallback,
   ReactNode,
 } from "react";
 import serviceService from "../services/serviceService";
@@ -31,28 +33,34 @@ export const ServiceProvider: React.FC<ServiceProviderProps> = ({
   children,
 }) => {
   const [services, setServices] = useState<Service[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
-  // Cargar servicios al montar el componente
-  useEffect(() => {
-    fetchServices();
-  }, []);
+  const [initialized, setInitialized] = useState<boolean>(false);
 
   // Función para obtener todos los servicios
-  const fetchServices = async () => {
+  const fetchServices = useCallback(async () => {
+    if (isLoading) return; // Evitar múltiples solicitudes simultáneas
+
     try {
       setIsLoading(true);
       setError(null);
       const fetchedServices = await serviceService.getAllServices();
       setServices(fetchedServices);
+      setInitialized(true);
     } catch (err: any) {
       setError(err.response?.data?.message || "Error al cargar los servicios");
       console.error("Error al cargar servicios:", err);
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [isLoading]);
+
+  // Cargar servicios solo la primera vez
+  useEffect(() => {
+    if (!initialized) {
+      fetchServices();
+    }
+  }, [initialized, fetchServices]);
 
   // Función para crear un nuevo servicio
   const createService = async (

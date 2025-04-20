@@ -10,7 +10,7 @@ import {
   Spinner,
 } from "react-bootstrap";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate, useLocation } from "react-router-dom";
+import { useNavigate, useLocation, Link } from "react-router-dom";
 
 const LoginPage: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -100,6 +100,13 @@ const LoginPage: React.FC = () => {
                   "Iniciar sesión"
                 )}
               </Button>
+            </div>
+            {/* Añadimos el enlace a la página de registro */}
+            <div className="text-center mt-3">
+              <p>
+                ¿No tienes una cuenta?{" "}
+                <Link to="/register">Regístrate aquí</Link>
+              </p>
             </div>
           </Form>
         </Col>
