@@ -3,6 +3,7 @@ import { Container, Navbar, Nav, NavDropdown, Spinner } from "react-bootstrap";
 import { useAuth } from "../../context/AuthContext";
 import ThemeToggle from "../ui/ThemeToggle";
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import logo from "../../assets/images/logo.png"; // Importar el logo
 
 const Header: React.FC = () => {
@@ -43,6 +44,11 @@ const Header: React.FC = () => {
               id="user-dropdown"
               className="ms-3"
             >
+              {user.role === "admin" && (
+                <NavDropdown.Item as={Link} to="/admin">
+                  Panel de Administración
+                </NavDropdown.Item>
+              )}
               <NavDropdown.Item onClick={handleLogout} disabled={loggingOut}>
                 {loggingOut ? (
                   <>
