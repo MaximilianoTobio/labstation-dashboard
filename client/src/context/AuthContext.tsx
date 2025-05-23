@@ -52,7 +52,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
         // Solo intentar obtener el perfil del usuario si no estamos en la página de login
         if (!window.location.pathname.includes("/login")) {
           const response = await authService.getProfile();
-          setUser(response.user);
+          setUser((response as { user: User }).user);
           setIsAuthenticated(true);
         }
       } catch (err) {
