@@ -7,11 +7,13 @@ const { Op } = require("sequelize");
 const setTokenCookie = (res, token) => {
   // Opciones para la cookie
   const cookieOptions = {
-    httpOnly: true, // No accesible mediante JavaScript
-    secure: process.env.NODE_ENV === "production", // Solo HTTPS en producción
-    sameSite: "lax", // Cambia de 'strict' a 'lax' para permitir redirecciones
-    maxAge: parseInt(process.env.COOKIE_MAX_AGE) || 24 * 60 * 60 * 1000, // 24 horas por defecto
-    path: "/", // Asegúrate de que la cookie esté disponible en todas las rutas
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+    maxAge: parseInt(process.env.COOKIE_MAX_AGE) || 24 * 60 * 60 * 1000,
+    path: "/",
+    domain:
+      process.env.NODE_ENV === "production" ? ".labstation.dev" : undefined,
   };
 
   // Establecer la cookie

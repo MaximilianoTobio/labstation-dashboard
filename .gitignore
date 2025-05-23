@@ -26,3 +26,8 @@ node_modules/
 dist/
 .env
 .vscode/
+.env
+.env.production
+.env
+.env.local
+.env.production.local

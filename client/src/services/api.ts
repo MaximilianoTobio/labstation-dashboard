@@ -5,8 +5,8 @@ import axios, {
   //AxiosError,
 } from "axios";
 
-// URL base de la API (ajusta según tu entorno)
-const API_URL = "http://localhost:5000/api";
+// URL base de la API (Vite expone las variables con prefijo VITE_)
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
 
 // Creación de la instancia de Axios con configuración base
 const api: AxiosInstance = axios.create({

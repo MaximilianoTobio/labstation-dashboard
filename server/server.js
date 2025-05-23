@@ -6,6 +6,10 @@ const { sequelize, testConnection } = require("./config/db");
 const models = require("./models");
 const routes = require("./routes");
 const { seedServices } = require("./utils/seed");
+const helmet = require("helmet");
+const rateLimit = require("express-rate-limit");
+const morgan = require("morgan");
+const compression = require("compression");
 
 // Cargar variables de entorno
 dotenv.config();
@@ -13,15 +17,45 @@ dotenv.config();
 // Inicializar app
 const app = express();
 
-// Configuración de CORS con soporte para cookies
+// Seguridad con Helmet
 app.use(
-  cors({
-    origin: "http://localhost:5173", // URL exacta del frontend
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
   })
 );
+
+// Compresión
+app.use(compression());
+
+// Logs
+if (process.env.NODE_ENV === "production") {
+  app.use(morgan("combined"));
+} else {
+  app.use(morgan("dev"));
+}
+
+// Rate limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutos
+  max: 100, // límite de 100 requests por IP
+  message: "Demasiadas solicitudes desde esta IP, intenta más tarde.",
+});
+
+app.use("/api/", limiter);
+
+// Configuración de CORS con soporte para producción
+const corsOptions = {
+  origin:
+    process.env.CLIENT_URL ||
+    process.env.FRONTEND_URL ||
+    "http://localhost:5173",
+  credentials: true,
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
+  exposedHeaders: ["set-cookie"],
+};
+
+app.use(cors(corsOptions));
 
 // Middlewares
 app.use(cookieParser()); // Añadir esta línea
