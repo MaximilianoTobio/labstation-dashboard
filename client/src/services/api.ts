@@ -31,8 +31,8 @@ const api: AxiosInstance = axios.create({
 
 // Interceptor para manejar respuestas y errores comunes
 api.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  (response: any) => response,
+  (error: any) => {
     // Solo redirigir al login si no estamos ya en la página de login
     if (
       error.response &&
